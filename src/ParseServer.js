@@ -134,7 +134,7 @@ class ParseServer {
    * @static
    * Create an express app for the parse server
    * @param {Object} options let you specify the maxUploadSize when creating the express app  */
-  static app({ maxUploadSize = '20mb', appId }) {
+  static app({ maxUploadSize = '20mb', appId, extraMiddleware }) {
     // This app serves the Parse API directly.
     // It's the equivalent of https://api.parse.com/1 in the hosted Parse API.
     var api = express();
@@ -164,6 +164,8 @@ class ParseServer {
     api.use(middlewares.allowCrossDomain);
     api.use(middlewares.allowMethodOverride);
     api.use(middlewares.handleParseHeaders);
+
+    api.use(extraMiddleware);
 
     const appRouter = ParseServer.promiseRouter({ appId });
     api.use(appRouter.expressRouter());
